@@ -1,4 +1,4 @@
-name: Greet on PR Merge
+name: Greet on User First PR Merge
 
 on:
   pull_request:
@@ -8,20 +8,29 @@ jobs:
   greet:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if pull request was merged
-        if: github.event.pull_request.merged == true
-        uses: actions/github-script@v4
+      - uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
             const authorLogin = context.payload.pull_request.user.login;
-            const greetingMessage = `🎉 Congratulations, @${authorLogin}! Your pull request was successfully merged. Thank you for your contribution! 🚀`;
 
-            // Add a comment to the pull request with the greeting message
-            await github.issues.createComment({
+            const firstPR = await github.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: prNumber,
-              body: greetingMessage
+              pull_requests: {
+                state: 'closed',
+                author: authorLogin,
+              },
             });
+
+            if (firstPR.data.length === 1) {
+              const greetingMessage = ` Congratulations, @${authorLogin}! This is your first pull request merge. Thank you for your contribution! `;
+
+              await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: greetingMessage
+              });
+            }
