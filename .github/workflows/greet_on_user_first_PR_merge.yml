@@ -23,6 +23,8 @@ jobs:
                 author: authorLogin,
               },
             });
+            
+            console.log(firstPR.data.length); 
 
             if (firstPR.data.length === 1) {
               const greetingMessage = ` Congratulations, @${authorLogin}! This is your first pull request merge. Thank you for your contribution! `;
