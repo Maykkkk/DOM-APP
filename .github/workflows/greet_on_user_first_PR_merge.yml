@@ -24,7 +24,7 @@ jobs:
             });
 
             let greetingMessage;
-            if (firstPR.data.length === 1 && github.event.pull_request.merged == true) {
+            if (firstPR.data.length === 1) {
             greetingMessage = ` Congratulations, @${authorLogin}! This is your first pull request merge. Thank you for your contribution! `;
             }
 
