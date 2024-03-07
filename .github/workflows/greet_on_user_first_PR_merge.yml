@@ -11,27 +11,27 @@ jobs:
       - uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const prNumber = context.payload.pull_request.number;
-          const authorLogin = context.payload.pull_request.user.login;
-          const firstPR = await github.issues.listForRepo({
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const authorLogin = context.payload.pull_request.user.login;
+            const firstPR = await github.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_requests: {
               state: 'closed',
               author: authorLogin,
             },
-          });
+            });
 
-          let greetingMessage;
-          if (firstPR.data.length === 1 && github.event.pull_request.merged == true) {
+            let greetingMessage;
+            if (firstPR.data.length === 1 && github.event.pull_request.merged == true) {
             greetingMessage = ` Congratulations, @${authorLogin}! This is your first pull request merge. Thank you for your contribution! `;
-          }
+            }
 
-          // Add a comment to the pull request with the appropriate message
-          await github.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: prNumber,
-            body: greetingMessage
-          });
+            // Add a comment to the pull request with the appropriate message
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: greetingMessage
+            });
